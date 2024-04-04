@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     // Add the Google services Gradle plugin
     alias(libs.plugins.googleServices)
+    // Dagger Hilt
+    alias(libs.plugins.daggerHilt)
+    kotlin("kapt") version libs.versions.kotlin
 }
 
 android {
@@ -57,6 +60,27 @@ dependencies {
     // Add the dependency for the Firebase Authentication and Cloud Firestore
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    // ViewModel
+    implementation(libs.lifecycle.viewmodel.compose)
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
+    // Coroutine Lifecycle Scopes
+    implementation(libs.kotlinx.coroutines.viewmodel)
+    implementation(libs.kotlinx.coroutines.runtime)
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    // Coil for loading images
+    implementation(libs.coil.compose)
+    // Retrofit & GSON
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    // okHttp
+    implementation(platform(libs.okhttp))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -66,6 +90,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    // androidx navigation
+    implementation(libs.androidx.navigation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
