@@ -23,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.jetareader.R
+import com.example.jetareader.ui.navigation.ViewsEnum
+import com.example.jetareader.ui.widgets.LogoWidget
 import kotlinx.coroutines.delay
 
 @Composable
@@ -36,6 +38,7 @@ fun SplashView(navController: NavHostController) {
             })
         )
         delay(2000)
+        navController.navigate(ViewsEnum.LOGIN.name)
     }
 
     Surface(
@@ -52,11 +55,7 @@ fun SplashView(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = stringResource(R.string.splash_title),
-                style = MaterialTheme.typography.displayMedium,
-                color = Color.Red.copy(alpha = 0.5f)
-            )
+            LogoWidget()
             Text(
                 text = stringResource(R.string.splash_text),
                 style = MaterialTheme.typography.bodyLarge,
