@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">JetAReader</string>
+    <string name="splash_title">A. Reader</string>
+    <string name="splash_text">\"Read. Change. Yourself\"</string>
 </resources>

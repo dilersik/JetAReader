@@ -11,7 +11,7 @@ enum class ViewsEnum {
     BOOK_STATS;
 
     companion object {
-        fun fromRout(route: String): ViewsEnum = when (route.substringBefore("/")) {
+        fun fromRoute(route: String): ViewsEnum = when (route.substringBefore("/")) {
             SPLASH.name -> SPLASH
             LOGIN.name -> LOGIN
             CREATE_ACCOUNT.name -> CREATE_ACCOUNT
