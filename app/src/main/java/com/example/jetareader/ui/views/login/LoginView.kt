@@ -31,36 +31,40 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.jetareader.R
 import com.example.jetareader.ui.widgets.EmailInput
 import com.example.jetareader.ui.widgets.LogoWidget
 import com.example.jetareader.ui.widgets.PasswordInput
+import com.example.jetareader.ui.widgets.SubmitButton
 
 @Composable
 fun LoginView(navController: NavHostController) {
+    val viewModel: LoginViewModel = hiltViewModel()
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             LogoWidget()
-            Form(loading = false) { email, pwd ->
+            Form(viewModel = viewModel, loading = false, onDone = { email, pwd ->
 
-            }
+            })
         }
     }
 }
 
 @Composable
-private fun Form(loading: Boolean, onDone: (String, String) -> Unit) {
+private fun Form(viewModel: LoginViewModel, loading: Boolean, onDone: (String, String) -> Unit) {
     val emailState = rememberSaveable { mutableStateOf("") }
     val passwordState = rememberSaveable { mutableStateOf("") }
     val passwordVisibilityState = rememberSaveable { mutableStateOf(false) }
     val passwordFocusRequest = FocusRequester.Default
     val keyboardController = LocalSoftwareKeyboardController.current
     val validState = remember(emailState.value, passwordState.value) {
-        false // validate
+        viewModel.validateForm(emailState.value, passwordState.value)
     }
 
     Column(
@@ -85,6 +89,15 @@ private fun Form(loading: Boolean, onDone: (String, String) -> Unit) {
             visibility = passwordVisibilityState,
             keyboardActions = KeyboardActions {
                 if (!validState) return@KeyboardActions
+                onDone(emailState.value, passwordState.value)
+            }
+        )
+
+        SubmitButton(
+            text = stringResource(R.string.login_btn),
+            enabled = !loading && validState,
+            loading = loading,
+            onClick = {
                 onDone(emailState.value, passwordState.value)
             }
         )
