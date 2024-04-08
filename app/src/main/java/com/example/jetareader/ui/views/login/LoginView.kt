@@ -23,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -34,6 +35,7 @@ import androidx.navigation.NavHostController
 import com.example.jetareader.R
 import com.example.jetareader.ui.widgets.EmailInput
 import com.example.jetareader.ui.widgets.LogoWidget
+import com.example.jetareader.ui.widgets.PasswordInput
 
 @Composable
 fun LoginView(navController: NavHostController) {
@@ -43,13 +45,15 @@ fun LoginView(navController: NavHostController) {
             verticalArrangement = Arrangement.Center
         ) {
             LogoWidget()
+            Form(loading = false) { email, pwd ->
 
+            }
         }
     }
 }
 
 @Composable
-private fun Form() {
+private fun Form(loading: Boolean, onDone: (String, String) -> Unit) {
     val emailState = rememberSaveable { mutableStateOf("") }
     val passwordState = rememberSaveable { mutableStateOf("") }
     val passwordVisibilityState = rememberSaveable { mutableStateOf(false) }
@@ -66,10 +70,23 @@ private fun Form() {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        EmailInput(state = emailState,
-            enabled = true,
+        EmailInput(
+            state = emailState,
+            enabled = !loading,
             keyboardActions = KeyboardActions {
                 passwordFocusRequest.requestFocus()
-            })
+            }
+        )
+
+        PasswordInput(
+            modifier = Modifier.focusRequester(passwordFocusRequest),
+            state = passwordState,
+            enabled = !loading,
+            visibility = passwordVisibilityState,
+            keyboardActions = KeyboardActions {
+                if (!validState) return@KeyboardActions
+                onDone(emailState.value, passwordState.value)
+            }
+        )
     }
 }

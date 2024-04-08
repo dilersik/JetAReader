@@ -4,16 +4,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetareader.R
@@ -39,6 +45,39 @@ fun EmailInput(
 }
 
 @Composable
+fun PasswordInput(
+    modifier: Modifier,
+    state: MutableState<String>,
+    visibility: MutableState<Boolean>,
+    keyboardActions: KeyboardActions,
+    label: String = stringResource(R.string.password_lbl),
+    enabled: Boolean = true,
+    imeAction: ImeAction = ImeAction.Done,
+) {
+    InputField(
+        modifier = modifier,
+        state = state,
+        label = label,
+        enabled = enabled,
+        imeAction = imeAction,
+        keyboardActions = keyboardActions,
+        keyboardType = KeyboardType.Password,
+        visualTransformation = if (visibility.value) VisualTransformation.None
+        else PasswordVisualTransformation(),
+        trailingIcon = { PasswordVisibility(visibility) }
+    )
+}
+
+@Composable
+private fun PasswordVisibility(visibility: MutableState<Boolean>) {
+    IconButton(onClick = {
+        visibility.value = !visibility.value
+    }) {
+        Icons.Default.Close
+    }
+}
+
+@Composable
 private fun InputField(
     modifier: Modifier = Modifier,
     state: MutableState<String>,
@@ -47,7 +86,9 @@ private fun InputField(
     singleLine: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: @Composable () -> Unit = {}
 ) {
     OutlinedTextField(
         value = state.value,
@@ -60,6 +101,8 @@ private fun InputField(
         textStyle = TextStyle(fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        visualTransformation = visualTransformation,
+        trailingIcon = { trailingIcon() }
     )
 }

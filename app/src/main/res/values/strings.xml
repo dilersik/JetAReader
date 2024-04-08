@@ -3,4 +3,5 @@
     <string name="splash_title">A. Reader</string>
     <string name="splash_text">\"Read. Change. Yourself\"</string>
     <string name="email_lbl">Email</string>
+    <string name="password_lbl">Password</string>
 </resources>
