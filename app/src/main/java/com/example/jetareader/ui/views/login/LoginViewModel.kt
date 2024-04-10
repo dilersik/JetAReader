@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetareader.utils.isEmail
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                 auth.createUserWithEmailAndPassword(email, pwd)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            createFirebaseFirestoreUser(task.result.user?.displayName)
                             redirect()
                         } else {
                             Log.e(TAG, task.exception.toString())
@@ -45,6 +47,17 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                 _error.value = e.message
             }
         }
+
+    private fun createFirebaseFirestoreUser(displayName: String?) {
+        val userId = auth.currentUser?.uid
+        val user = mutableMapOf<String, Any>()
+        user["user_id"] = userId.toString()
+        user["display_name"] = displayName.toString()
+
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .add(user)
+    }
 
     fun signInFirebaseUser(email: String, pwd: String, redirect: () -> Unit) =
         viewModelScope.launch {
