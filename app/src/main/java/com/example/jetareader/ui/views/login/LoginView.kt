@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,12 +45,7 @@ import com.example.jetareader.utils.showToast
 fun LoginView(navController: NavHostController) {
     val viewModel: LoginViewModel = hiltViewModel()
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
-    val context = LocalContext.current
-    val error = viewModel.error.collectAsState().value
-
-    if (error != null) {
-        context.showToast(error)
-    }
+    HandleErrorObserver(viewModel)
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -71,10 +67,21 @@ fun LoginView(navController: NavHostController) {
                     viewModel = viewModel,
                     showLoginForm = showLoginForm,
                     onDone = { email, pwd ->
-                        viewModel.createFirebaseUser(email, pwd)
+                        viewModel.createFirebaseUser(email, pwd, redirect = {
+                            navController.navigate(ViewsEnum.HOME.name)
+                        })
                     })
             }
         }
+    }
+}
+
+@Composable
+private fun HandleErrorObserver(viewModel: LoginViewModel) {
+    val context = LocalContext.current
+    val error = viewModel.error.observeAsState().value
+    if (error != null) {
+        context.showToast(error)
     }
 }
 
