@@ -5,4 +5,10 @@
     <string name="email_lbl">Email</string>
     <string name="password_lbl">Password</string>
     <string name="login_btn">Login</string>
+    <string name="new_user_lbl">New user?</string>
+    <string name="sign_up_lbl">Sign up</string>
+    <string name="already_have_an_account_link">Already have an account?</string>
+    <string name="login_link">Login</string>
+    <string name="create_account_btn">Create an account</string>
+    <string name="create_account_info">Please enter a valid email and\npassword that is at least 4 chars.</string>
 </resources>
