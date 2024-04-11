@@ -91,6 +91,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
 
     fun isFBUserAuth() = auth.currentUser?.email.isNullOrEmpty().not()
 
+    fun logout() = auth.signOut()
+
     fun validateForm(email: String, pwd: String) = validateEmail(email) && validatePwd(pwd)
 
     private fun validateEmail(email: String) = email.trim().isNotEmpty() && email.isEmail()
