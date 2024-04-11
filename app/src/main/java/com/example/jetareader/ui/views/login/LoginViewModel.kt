@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetareader.model.MUser
 import com.example.jetareader.utils.isEmail
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -59,6 +60,23 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             .add(user)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    updateFirebaseUser(displayName, redirect)
+                } else {
+                    Log.e(TAG, task.exception.toString())
+                    _error.value = task.exception?.message
+                }
+
+            }
+    }
+
+    private fun updateFirebaseUser(displayName: String?, redirect: () -> Unit) {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(displayName)
+            .build()
+
+        auth.currentUser?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
                     redirect()
                 } else {
                     Log.e(TAG, task.exception.toString())
@@ -92,6 +110,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
     fun isFBUserAuth() = auth.currentUser?.email.isNullOrEmpty().not()
 
     fun logout() = auth.signOut()
+
+    fun getUser() = auth.currentUser
 
     fun validateForm(email: String, pwd: String) = validateEmail(email) && validatePwd(pwd)
 
