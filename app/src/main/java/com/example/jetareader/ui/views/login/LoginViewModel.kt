@@ -32,14 +32,13 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             try {
                 auth.createUserWithEmailAndPassword(email, pwd)
                     .addOnCompleteListener { task ->
+                        val displayName = email.substringBefore("@")
                         if (task.isSuccessful) {
-                            createFirebaseFirestoreUser(task.result.user?.displayName)
-                            redirect()
+                            createFirebaseFirestoreUser(displayName, redirect)
                         } else {
                             Log.e(TAG, task.exception.toString())
                             _error.value = task.exception?.message
                         }
-                        _loading.value = false
                     }
             } catch (e: Exception) {
                 Log.e(TAG, e.message.toString())
@@ -48,7 +47,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             }
         }
 
-    private fun createFirebaseFirestoreUser(displayName: String?) {
+    private fun createFirebaseFirestoreUser(displayName: String?, redirect: () -> Unit) {
         val userId = auth.currentUser?.uid
         val user = mutableMapOf<String, Any>()
         user["user_id"] = userId.toString()
@@ -57,6 +56,15 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         FirebaseFirestore.getInstance()
             .collection("users")
             .add(user)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    redirect()
+                } else {
+                    Log.e(TAG, task.exception.toString())
+                    _error.value = task.exception?.message
+                }
+                _loading.value = false
+            }
     }
 
     fun signInFirebaseUser(email: String, pwd: String, redirect: () -> Unit) =
@@ -79,6 +87,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                 _error.value = e.message
             }
         }
+
+    fun isFBUserAuth() = auth.currentUser?.email.isNullOrEmpty().not()
 
     fun validateForm(email: String, pwd: String) = validateEmail(email) && validatePwd(pwd)
 

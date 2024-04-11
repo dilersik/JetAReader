@@ -21,14 +21,18 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.jetareader.R
 import com.example.jetareader.ui.navigation.ViewsEnum
+import com.example.jetareader.ui.views.login.LoginViewModel
 import com.example.jetareader.ui.widgets.LogoWidget
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashView(navController: NavHostController) {
+    val viewModel: LoginViewModel = hiltViewModel()
+
     val scale = remember { Animatable(0f) }
     LaunchedEffect(key1 = true) {
         scale.animateTo(
@@ -38,7 +42,10 @@ fun SplashView(navController: NavHostController) {
             })
         )
         delay(2000)
-        navController.navigate(ViewsEnum.LOGIN.name)
+        navController.navigate(
+            if (viewModel.isFBUserAuth()) ViewsEnum.HOME.name
+            else ViewsEnum.LOGIN.name
+        )
     }
 
     Surface(
