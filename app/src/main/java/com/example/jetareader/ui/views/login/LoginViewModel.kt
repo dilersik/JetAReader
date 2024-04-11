@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetareader.model.MUser
 import com.example.jetareader.utils.isEmail
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -48,10 +49,10 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         }
 
     private fun createFirebaseFirestoreUser(displayName: String?, redirect: () -> Unit) {
-        val userId = auth.currentUser?.uid
-        val user = mutableMapOf<String, Any>()
-        user["user_id"] = userId.toString()
-        user["display_name"] = displayName.toString()
+        val user = MUser(
+            userId = auth.currentUser?.uid.toString(),
+            displayName = displayName.toString()
+        ).mapToFirestore()
 
         FirebaseFirestore.getInstance()
             .collection("users")
