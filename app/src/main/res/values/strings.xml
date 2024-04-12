@@ -14,6 +14,7 @@
     <string name="content_fab_description">add a book</string>
     <string name="content_logout_description">logout</string>
     <string name="home_title_section">Your reading\nactivity right now</string>
+    <string name="home_subtitle_section">Reading list</string>
     <string name="content_favorite_description">favorite</string>
     <string name="reading_btn">Reading</string>
 </resources>
