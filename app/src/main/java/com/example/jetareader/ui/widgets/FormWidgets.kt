@@ -31,7 +31,7 @@ import com.example.jetareader.R
 fun EmailInput(
     modifier: Modifier = Modifier,
     state: MutableState<String>,
-    label: String = stringResource(R.string.email_lbl),
+    labelResId: Int = R.string.email_lbl,
     enabled: Boolean = true,
     imeAction: ImeAction = ImeAction.Next,
     keyboardActions: KeyboardActions = KeyboardActions.Default
@@ -39,7 +39,7 @@ fun EmailInput(
     InputField(
         modifier = modifier,
         state = state,
-        label = label,
+        labelResId = labelResId,
         enabled = enabled,
         imeAction = imeAction,
         keyboardActions = keyboardActions,
@@ -53,22 +53,21 @@ fun PasswordInput(
     state: MutableState<String>,
     visibility: MutableState<Boolean>,
     keyboardActions: KeyboardActions,
-    label: String = stringResource(R.string.password_lbl),
+    labelResId: Int = R.string.password_lbl,
     enabled: Boolean = true,
     imeAction: ImeAction = ImeAction.Done,
 ) {
     InputField(
         modifier = modifier,
         state = state,
-        label = label,
+        labelResId = labelResId,
         enabled = enabled,
         imeAction = imeAction,
         keyboardActions = keyboardActions,
         keyboardType = KeyboardType.Password,
         visualTransformation = if (visibility.value) VisualTransformation.None
-        else PasswordVisualTransformation(),
-        trailingIcon = { PasswordVisibility(visibility) }
-    )
+        else PasswordVisualTransformation()
+    ) { PasswordVisibility(visibility) }
 }
 
 @Composable
@@ -81,11 +80,11 @@ private fun PasswordVisibility(visibility: MutableState<Boolean>) {
 }
 
 @Composable
-private fun InputField(
+fun InputField(
     modifier: Modifier = Modifier,
     state: MutableState<String>,
-    label: String,
-    enabled: Boolean,
+    labelResId: Int,
+    enabled: Boolean = true,
     singleLine: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
@@ -99,7 +98,7 @@ private fun InputField(
         modifier = modifier
             .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth(),
-        label = { Text(text = label) },
+        label = { Text(text = stringResource(labelResId)) },
         singleLine = singleLine,
         textStyle = TextStyle(fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground),
         enabled = enabled,

@@ -13,8 +13,11 @@
     <string name="create_account_info">Please enter a valid email and\npassword that is at least 6 chars.</string>
     <string name="content_fab_description">add a book</string>
     <string name="content_logout_description">logout</string>
+    <string name="content_back_description">back</string>
     <string name="home_title_section">Your reading\nactivity right now</string>
     <string name="home_subtitle_section">Reading list</string>
     <string name="content_favorite_description">favorite</string>
     <string name="reading_btn">Reading</string>
+    <string name="book_search_title">Search books</string>
+    <string name="search_lbl">Search</string>
 </resources>

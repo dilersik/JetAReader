@@ -3,13 +3,16 @@
 package com.example.jetareader.ui.widgets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -24,12 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.jetareader.R
 
 @Composable
 fun AppBarWidget(
     titleResId: Int,
     navController: NavController,
-    actions: @Composable () -> Unit,
+    actions: @Composable () -> Unit = {},
     showBackArrow: Boolean = true
 ) {
     Box(
@@ -49,14 +53,22 @@ fun AppBarWidget(
                             contentDescription = "",
                             modifier = Modifier.scale(1.5f)
                         )
-                        Text(
-                            stringResource(id = titleResId),
-                            modifier = Modifier.padding(start = 16.dp),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
+                    } else {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.content_back_description),
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(start = 12.dp)
+                                .clickable { navController.popBackStack() }
                         )
                     }
+                    Text(
+                        stringResource(id = titleResId),
+                        modifier = Modifier.padding(start = 16.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             },
             actions = { actions() },

@@ -61,9 +61,7 @@ fun HomeView(navController: NavHostController) {
                 showBackArrow = false
             )
         }, floatingActionButton = {
-            FabWidget {
-
-            }
+            FabWidget { navController.navigate(ViewsEnum.BOOK_SEARCH.name) }
         }) { padding ->
         HomeContent(
             modifier = Modifier
@@ -89,10 +87,12 @@ private fun HomeContent(
     loginViewModel: LoginViewModel
 ) {
     Column(modifier) {
-        Row (verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             TitleSection(labelResId = R.string.home_title_section, modifier = Modifier.weight(.8f))
             Column(
-                modifier = Modifier.weight(.2f),
+                modifier = Modifier
+                    .weight(.2f)
+                    .padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
@@ -116,11 +116,14 @@ private fun HomeContent(
             }
         }
 
-        Row {
+        Row(modifier = Modifier.padding(top = 16.dp)) {
             BookCardItem(book = Book("1", "Book", "asdasd da slva"), navController)
         }
 
-        TitleSection(labelResId = R.string.home_subtitle_section)
+        TitleSection(
+            labelResId = R.string.home_subtitle_section,
+            modifier = Modifier.padding(top = 16.dp)
+        )
         ReadingBooksList(books = emptyList(), navController = navController)
     }
 }
@@ -137,10 +140,13 @@ private fun TitleSection(labelResId: Int, modifier: Modifier = Modifier) {
 @Composable
 private fun ReadingBooksList(books: List<Book>, navController: NavController) {
     val scrollState = rememberScrollState()
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .heightIn(280.dp)
-        .horizontalScroll(scrollState)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(280.dp)
+            .padding(top = 16.dp)
+            .horizontalScroll(scrollState)
+    ) {
 
         books.forEach {
             BookCardItem(book = it, navController = navController)
