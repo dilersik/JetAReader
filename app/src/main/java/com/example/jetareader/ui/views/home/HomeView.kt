@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.jetareader.R
-import com.example.jetareader.model.Book
+import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.navigation.ViewsEnum
 import com.example.jetareader.ui.theme.Purple40
 import com.example.jetareader.ui.views.login.LoginViewModel
@@ -117,14 +117,14 @@ private fun HomeContent(
         }
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
-            BookCardItem(book = Book("1", "Book", "asdasd da slva"), navController)
+            BookCardItem(MBook = MBook("1", "Book", "asdasd da slva"), navController)
         }
 
         TitleSection(
             labelResId = R.string.home_subtitle_section,
             modifier = Modifier.padding(top = 16.dp)
         )
-        ReadingBooksList(books = emptyList(), navController = navController)
+        ReadingBooksList(MBooks = emptyList(), navController = navController)
     }
 }
 
@@ -138,7 +138,7 @@ private fun TitleSection(labelResId: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ReadingBooksList(books: List<Book>, navController: NavController) {
+private fun ReadingBooksList(MBooks: List<MBook>, navController: NavController) {
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -148,8 +148,8 @@ private fun ReadingBooksList(books: List<Book>, navController: NavController) {
             .horizontalScroll(scrollState)
     ) {
 
-        books.forEach {
-            BookCardItem(book = it, navController = navController)
+        MBooks.forEach {
+            BookCardItem(MBook = it, navController = navController)
         }
     }
 }

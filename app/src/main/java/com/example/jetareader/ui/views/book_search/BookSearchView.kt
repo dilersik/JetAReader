@@ -35,7 +35,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.jetareader.R
-import com.example.jetareader.model.Book
+import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.FabWidget
 import com.example.jetareader.ui.widgets.InputField
@@ -66,7 +66,7 @@ fun BookSearchView(navController: NavHostController) {
 @Composable
 private fun BookList(navController: NavHostController) {
     val context = LocalContext.current
-    val list = listOf(Book("1", "Book", "asdasd da slva"), Book("1", "Book", "asdasd da slva"))
+    val list = listOf(MBook("1", "Book", "asdasd da slva"), MBook("1", "Book", "asdasd da slva"))
     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
         items(list) { book ->
             Card(

@@ -1,8 +1,12 @@
 package com.example.jetareader.model
 
 data class Book(
-    var id: String,
-    var title: String,
-    var authors: String,
-    var notes: String? = null
+    val accessInfo: AccessInfo,
+    val etag: String,
+    val id: String,
+    val kind: String,
+    val saleInfo: SaleInfo,
+    val searchInfo: SearchInfo,
+    val selfLink: String,
+    val volumeInfo: VolumeInfo
 )
