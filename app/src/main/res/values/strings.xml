@@ -20,4 +20,5 @@
     <string name="reading_btn">Reading</string>
     <string name="book_search_title">Search books</string>
     <string name="search_lbl">Search</string>
+    <string name="book_author_lbl">Author: %1$s</string>
 </resources>
