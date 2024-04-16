@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,9 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +35,6 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.jetareader.R
-import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.FabWidget
 import com.example.jetareader.ui.widgets.InputField
@@ -56,21 +54,23 @@ fun BookSearchView(navController: NavHostController) {
             }
         }) { padding ->
 
-        Surface(modifier = Modifier.padding(padding)) {
-            SearchForm() {
+        Column(modifier = Modifier.padding(padding)) {
+            SearchForm {
                 viewModel.searchBooks(it)
             }
-            BookList(navController)
+            if (viewModel.loading)
+                CircularProgressIndicator()
+            else
+                BookList(navController, viewModel)
         }
     }
 }
 
 @Composable
-private fun BookList(navController: NavHostController) {
+private fun BookList(navController: NavHostController, viewModel: BookSearchViewModel) {
     val context = LocalContext.current
-    val list = listOf(MBook("1", "Book", "asdasd da slva"), MBook("1", "Book", "asdasd da slva"))
-    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
-        items(list) { book ->
+    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        items(viewModel.books) { book ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,13 +97,13 @@ private fun BookList(navController: NavHostController) {
 
                     Column(modifier = Modifier.padding(start = 12.dp)) {
                         Text(
-                            text = book.title,
+                            text = book.volumeInfo.title,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = stringResource(R.string.book_author_lbl, book.authors),
+                            text = stringResource(R.string.book_author_lbl, book.volumeInfo.authors.toString()),
                             overflow = TextOverflow.Clip,
                             style = MaterialTheme.typography.labelLarge,
                         )
@@ -119,17 +119,16 @@ private fun SearchForm(onSearch: (String) -> Unit = {}) {
     val searchQueryState = rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val valid = remember(searchQueryState.value) { searchQueryState.value.isNotEmpty() }
-    Column {
-        InputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            state = searchQueryState,
-            labelResId = R.string.search_lbl,
-            keyboardActions = KeyboardActions {
-                if (!valid) return@KeyboardActions
-                onSearch(searchQueryState.value.trim())
-                keyboardController?.hide()
-            })
-    }
+
+    InputField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        state = searchQueryState,
+        labelResId = R.string.search_lbl,
+        keyboardActions = KeyboardActions {
+            if (!valid) return@KeyboardActions
+            onSearch(searchQueryState.value.trim())
+            keyboardController?.hide()
+        })
 }

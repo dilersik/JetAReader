@@ -22,6 +22,7 @@ class BookSearchViewModel @Inject constructor(private val bookRepository: BookRe
     val error = _error.value
 
     private val _books: MutableState<List<Book>> = mutableStateOf(emptyList())
+    val books = _books.value
 
     fun searchBooks(query: String) = viewModelScope.launch {
         if (query.isEmpty()) return@launch
