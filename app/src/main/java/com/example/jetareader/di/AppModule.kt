@@ -1,6 +1,8 @@
 package com.example.jetareader.di
 
 import com.example.jetareader.network.BooksApi
+import com.example.jetareader.repository.BookRepository
+import com.example.jetareader.repository.BookRepositoryImp
 import com.example.jetareader.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -21,5 +23,9 @@ object AppModule {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(BooksApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideBookRepository(booksApi: BooksApi): BookRepository = BookRepositoryImp(booksApi)
 
 }
