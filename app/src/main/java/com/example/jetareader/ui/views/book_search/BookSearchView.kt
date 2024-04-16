@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -42,6 +43,7 @@ import com.example.jetareader.ui.widgets.InputField
 
 @Composable
 fun BookSearchView(navController: NavHostController) {
+    val viewModel: BookSearchViewModel = hiltViewModel()
     Scaffold(
         topBar = {
             AppBarWidget(
@@ -56,7 +58,7 @@ fun BookSearchView(navController: NavHostController) {
 
         Surface(modifier = Modifier.padding(padding)) {
             SearchForm() {
-
+                viewModel.searchBooks(it)
             }
             BookList(navController)
         }
