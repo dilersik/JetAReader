@@ -2,6 +2,7 @@ package com.example.jetareader.ui.views.book_search
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,6 +41,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.example.jetareader.R
 import com.example.jetareader.model.Book
+import com.example.jetareader.ui.navigation.ViewsEnum
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.InputField
 import com.example.jetareader.utils.showToast
@@ -85,10 +87,13 @@ private fun BookList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(max = maxHeight)
-                        .padding(bottom = 16.dp),
+                        .padding(bottom = 16.dp)
+                        .clickable {
+                            navController.navigate(ViewsEnum.BOOK_DETAILS.name + "/${book.id}")
+                        },
                     shape = RectangleShape,
                     elevation = CardDefaults.cardElevation(7.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
                 ) {
                     BookRow(context, book)
                 }
@@ -102,7 +107,7 @@ private fun BookRow(context: Context, book: Book) {
     Row(modifier = Modifier.padding(8.dp)) {
         val painter = rememberAsyncImagePainter(
             model = ImageRequest.Builder(context)
-                .data(book.volumeInfo.imageLinks.thumbnail)
+                .data(book.volumeInfo.imageLinks?.thumbnail)
                 .crossfade(true)
                 .scale(Scale.FILL)
                 .build()
@@ -125,7 +130,7 @@ private fun BookRow(context: Context, book: Book) {
                 maxLines = 2
             )
             Text(
-                text = book.volumeInfo.subtitle.toString(),
+                text = book.volumeInfo.subtitle ?: "",
                 overflow = TextOverflow.Clip,
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 2

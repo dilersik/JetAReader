@@ -1,10 +1,13 @@
 package com.example.jetareader.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.jetareader.ui.views.book_details.BookDetailsView
+import com.example.jetareader.ui.views.book_details.BookDetailsViewConstants
 import com.example.jetareader.ui.views.book_search.BookSearchView
 import com.example.jetareader.ui.views.book_stats.BookStatsView
 import com.example.jetareader.ui.views.book_update.BookUpdateView
@@ -41,8 +44,13 @@ fun Navigation() {
             BookSearchView(navController = navController)
         }
 
-        composable(ViewsEnum.BOOK_DETAILS.name) {
-            BookDetailsView(navController = navController)
+        composable(
+            ViewsEnum.BOOK_DETAILS.name + "/{${BookDetailsViewConstants.PARAM}}",
+            arguments = listOf(navArgument(BookDetailsViewConstants.PARAM) {
+                type = NavType.StringType
+            })
+        ) {
+            BookDetailsView(navController = navController, navBackStackEntry = it)
         }
 
         composable(ViewsEnum.BOOK_UPDATE.name) {

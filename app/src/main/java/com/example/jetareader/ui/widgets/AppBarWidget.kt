@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.jetareader.R
@@ -50,15 +49,16 @@ fun AppBarWidget(
                     if (!showBackArrow) {
                         Image(
                             imageVector = Icons.Rounded.Menu,
-                            contentDescription = "",
-                            modifier = Modifier.scale(1.5f)
+                            contentDescription = ""
                         )
                     } else {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.content_back_description),
                             tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.padding(start = 12.dp)
+                            modifier = Modifier
+                                .padding(start = 12.dp)
+                                .scale(1.2f)
                                 .clickable { navController.popBackStack() }
                         )
                     }
@@ -67,7 +67,6 @@ fun AppBarWidget(
                         modifier = Modifier.padding(start = 16.dp),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
                     )
                 }
             },
