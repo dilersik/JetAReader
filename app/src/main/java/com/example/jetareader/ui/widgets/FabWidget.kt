@@ -2,7 +2,7 @@ package com.example.jetareader.ui.widgets
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +20,7 @@ fun FabWidget(onTap: () -> Unit) {
         containerColor = MaterialTheme.colorScheme.primary
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
+            imageVector = Icons.Default.Search,
             contentDescription = stringResource(R.string.content_fab_description),
             tint = Purple80
         )
