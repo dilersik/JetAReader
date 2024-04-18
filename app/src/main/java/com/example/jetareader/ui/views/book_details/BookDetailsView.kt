@@ -1,10 +1,18 @@
 package com.example.jetareader.ui.views.book_details
 
-import androidx.compose.foundation.layout.Column
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,12 +20,22 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.jetareader.R
 import com.example.jetareader.data.ResultWrapper
 import com.example.jetareader.model.Book
+import com.example.jetareader.ui.theme.TitleColor
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.utils.showToast
 
@@ -38,21 +56,103 @@ fun BookDetailsView(navController: NavHostController, navBackStackEntry: NavBack
             )
         }
     ) { padding ->
-        Column(
+
+        LazyColumn(
             modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(
+                    top = padding.calculateTopPadding() + 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            when (resultWrapper) {
-                is ResultWrapper.Loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                is ResultWrapper.Success -> Text(text = resultWrapper.data.volumeInfo.title)
-                is ResultWrapper.Error -> context.showToast(resultWrapper.exception.message.toString())
+            item {
+                when (resultWrapper) {
+                    is ResultWrapper.Loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    is ResultWrapper.Success -> ShowBookDetails(resultWrapper.data, context)
+                    is ResultWrapper.Error -> context.showToast(resultWrapper.exception.message.toString())
+                }
             }
-
         }
     }
+}
+
+@Composable
+private fun ShowBookDetails(book: Book, context: Context) {
+    val description = buildAnnotatedString {
+        append(HtmlCompat.fromHtml(book.volumeInfo.description, HtmlCompat.FROM_HTML_MODE_COMPACT))
+    }
+
+    Card(elevation = CardDefaults.cardElevation(4.dp)) {
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(context)
+                .data(book.volumeInfo.imageLinks?.large)
+                .crossfade(true)
+                .size(Size.ORIGINAL) // Important in order to work with verticalScroll
+                .build()
+        )
+        Image(
+            painter = painter,
+            contentDescription = "",
+        )
+    }
+
+    Text(
+        modifier = Modifier
+            .padding(top = 20.dp)
+            .clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(book.volumeInfo.infoLink))
+                context.startActivity(intent)
+            },
+        text = book.volumeInfo.title,
+        style = MaterialTheme.typography.headlineMedium,
+        fontWeight = FontWeight.Bold,
+        color = TitleColor,
+        textAlign = TextAlign.Center
+    )
+
+    Text(
+        text = book.volumeInfo.subtitle ?: "",
+        style = MaterialTheme.typography.titleLarge,
+    )
+    Text(
+        text = stringResource(
+            R.string.book_date_lbl,
+            book.volumeInfo.publishedDate
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        style = MaterialTheme.typography.titleMedium,
+        textAlign = TextAlign.Left
+    )
+    Text(
+        text = stringResource(
+            R.string.book_publisher_lbl,
+            book.volumeInfo.publisher
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        style = MaterialTheme.typography.titleMedium,
+        textAlign = TextAlign.Left
+    )
+    Text(
+        text = stringResource(
+            R.string.book_author_lbl,
+            book.volumeInfo.authors
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        style = MaterialTheme.typography.titleMedium,
+        textAlign = TextAlign.Left
+    )
+    Text(
+        text = description,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = TextAlign.Left
+    )
 }
 
 object BookDetailsViewConstants {

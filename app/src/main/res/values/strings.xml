@@ -23,4 +23,5 @@
     <string name="search_lbl">Search</string>
     <string name="book_author_lbl">Author: %s</string>
     <string name="book_date_lbl">Date: %s</string>
+    <string name="book_publisher_lbl">Publisher: %s</string>
 </resources>
