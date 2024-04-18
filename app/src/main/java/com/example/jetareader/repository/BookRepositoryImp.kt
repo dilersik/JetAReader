@@ -1,8 +1,8 @@
 package com.example.jetareader.repository
 
 import android.util.Log
+import com.example.jetareader.data.ResultWrapper
 import com.example.jetareader.model.Book
-import com.example.jetareader.model.ResultWrapper
 import com.example.jetareader.network.BooksApi
 import javax.inject.Inject
 

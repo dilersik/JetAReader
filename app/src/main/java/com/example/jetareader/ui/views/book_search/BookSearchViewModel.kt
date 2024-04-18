@@ -5,8 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetareader.data.ResultWrapper
 import com.example.jetareader.model.Book
-import com.example.jetareader.model.ResultWrapper
 import com.example.jetareader.repository.BookRepository
 import com.example.jetareader.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +36,7 @@ class BookSearchViewModel @Inject constructor(private val bookRepository: BookRe
         when (val result = bookRepository.searchBooks(query)) {
             is ResultWrapper.Success -> _books.value = result.data
             is ResultWrapper.Error -> _error.value = result.exception.message
+            is ResultWrapper.Loading -> {}
         }
         _loading.value = false
     }
