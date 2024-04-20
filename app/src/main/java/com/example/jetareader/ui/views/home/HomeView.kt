@@ -117,7 +117,7 @@ private fun HomeContent(
         }
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
-            BookCardItem(MBook = MBook("1", "Book", "asdasd da slva"), navController)
+            BookCardItem(MBook = MBook("1", "Book", "asdasd da slva", "", "", ""), navController)
         }
 
         TitleSection(

@@ -5,17 +5,23 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -47,6 +54,10 @@ fun BookDetailsView(navController: NavHostController, navBackStackEntry: NavBack
     val resultWrapper = produceState<ResultWrapper<Book>>(initialValue = ResultWrapper.Loading()) {
         value = viewModel.getBookInfo(bookId)
     }.value
+    val error = viewModel.error.observeAsState().value
+    if (error != null) {
+        context.showToast(error)
+    }
 
     Scaffold(
         topBar = {
@@ -70,7 +81,13 @@ fun BookDetailsView(navController: NavHostController, navBackStackEntry: NavBack
             item {
                 when (resultWrapper) {
                     is ResultWrapper.Loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                    is ResultWrapper.Success -> ShowBookDetails(resultWrapper.data, context)
+                    is ResultWrapper.Success -> ShowBookDetails(
+                        resultWrapper.data,
+                        context,
+                        viewModel,
+                        navController
+                    )
+
                     is ResultWrapper.Error -> context.showToast(resultWrapper.exception.message.toString())
                 }
             }
@@ -79,7 +96,12 @@ fun BookDetailsView(navController: NavHostController, navBackStackEntry: NavBack
 }
 
 @Composable
-private fun ShowBookDetails(book: Book, context: Context) {
+private fun ShowBookDetails(
+    book: Book,
+    context: Context,
+    viewModel: BookDetailsViewModel,
+    navController: NavController
+) {
     val description = buildAnnotatedString {
         append(HtmlCompat.fromHtml(book.volumeInfo.description, HtmlCompat.FROM_HTML_MODE_COMPACT))
     }
@@ -98,19 +120,31 @@ private fun ShowBookDetails(book: Book, context: Context) {
         )
     }
 
-    Text(
-        modifier = Modifier
-            .padding(top = 20.dp)
-            .clickable {
+    Row(
+        modifier = Modifier.padding(top = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier.clickable {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(book.volumeInfo.infoLink))
                 context.startActivity(intent)
             },
-        text = book.volumeInfo.title,
-        style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold,
-        color = TitleColor,
-        textAlign = TextAlign.Center
-    )
+            text = book.volumeInfo.title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = TitleColor,
+            textAlign = TextAlign.Center
+        )
+
+        Icon(
+            imageVector = Icons.Rounded.Add,
+            contentDescription = "",
+            modifier = Modifier.clickable {
+                viewModel.saveBookToFirebase(book) {
+                    navController.popBackStack()
+                }
+            })
+    }
 
     Text(
         text = book.volumeInfo.subtitle ?: "",
