@@ -16,12 +16,14 @@ import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,6 +36,7 @@ import com.example.jetareader.ui.navigation.ViewsEnum
 import com.example.jetareader.ui.theme.Purple40
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.FabWidget
+import com.example.jetareader.utils.showToast
 
 @Composable
 fun HomeView(navController: NavHostController) {
@@ -116,14 +119,18 @@ private fun HomeContent(
         }
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
-            BookCardItem(mBook = MBook("1", "Book", "asdasd da slva", "", "", ""), navController)
+            BookCardItem(mBook = MBook("1", "Book", "TESTE", "", "", ""), navController)
         }
 
         TitleSection(
             labelResId = R.string.home_subtitle_section,
             modifier = Modifier.padding(top = 16.dp)
         )
-        ReadingBooksList(MBooks = emptyList(), navController = navController)
+        when {
+            viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            viewModel.error != null -> LocalContext.current.showToast(viewModel.error!!)
+            else -> ReadingBooksList(MBooks = viewModel.books, navController = navController)
+        }
     }
 }
 

@@ -1,13 +1,10 @@
 package com.example.jetareader.model
 
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.PropertyName
 
 data class MBook(
-    @Exclude
     var id: String? = null,
-
     var title: String,
     var authors: String,
 
@@ -45,4 +42,21 @@ data class MBook(
     @get:PropertyName("finished_reading_at")
     @set:PropertyName("finished_reading_at")
     var finishedReading: Timestamp? = null,
-)
+) {
+    constructor() : this(
+        null,
+        "",
+        "",
+        "",
+        "",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+    )
+}
