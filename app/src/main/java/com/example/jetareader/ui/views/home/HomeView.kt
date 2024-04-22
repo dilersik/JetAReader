@@ -32,13 +32,12 @@ import com.example.jetareader.R
 import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.navigation.ViewsEnum
 import com.example.jetareader.ui.theme.Purple40
-import com.example.jetareader.ui.views.login.LoginViewModel
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.FabWidget
 
 @Composable
 fun HomeView(navController: NavHostController) {
-    val loginViewModel: LoginViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel()
 
     Scaffold(
         topBar = {
@@ -48,7 +47,7 @@ fun HomeView(navController: NavHostController) {
                 actions = {
                     IconButton(
                         onClick = {
-                            loginViewModel.logout().run {
+                            viewModel.logout().run {
                                 navController.navigate(ViewsEnum.LOGIN.name)
                             }
                         }) {
@@ -75,7 +74,7 @@ fun HomeView(navController: NavHostController) {
                 )
                 .fillMaxSize(),
             navController = navController,
-            loginViewModel = loginViewModel
+            viewModel = viewModel
         )
     }
 }
@@ -84,7 +83,7 @@ fun HomeView(navController: NavHostController) {
 private fun HomeContent(
     modifier: Modifier = Modifier,
     navController: NavController,
-    loginViewModel: LoginViewModel
+    viewModel: HomeViewModel
 ) {
     Column(modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -105,7 +104,7 @@ private fun HomeContent(
                     tint = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = loginViewModel.getUser()?.displayName.toString(),
+                    text = viewModel.getUser()?.displayName.toString(),
                     modifier = Modifier.padding(2.dp),
                     style = MaterialTheme.typography.labelLarge,
                     color = Purple40,
@@ -117,7 +116,7 @@ private fun HomeContent(
         }
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
-            BookCardItem(MBook = MBook("1", "Book", "asdasd da slva", "", "", ""), navController)
+            BookCardItem(mBook = MBook("1", "Book", "asdasd da slva", "", "", ""), navController)
         }
 
         TitleSection(
@@ -149,7 +148,7 @@ private fun ReadingBooksList(MBooks: List<MBook>, navController: NavController) 
     ) {
 
         MBooks.forEach {
-            BookCardItem(MBook = it, navController = navController)
+            BookCardItem(mBook = it, navController = navController)
         }
     }
 }

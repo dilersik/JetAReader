@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -75,6 +76,7 @@ fun BookDetailsView(navController: NavHostController, navBackStackEntry: NavBack
                     top = padding.calculateTopPadding() + 16.dp,
                     start = 16.dp,
                     end = 16.dp,
+                    bottom = 16.dp
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -121,14 +123,19 @@ private fun ShowBookDetails(
     }
 
     Row(
-        modifier = Modifier.padding(top = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .padding(top = 20.dp, bottom = 20.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier.clickable {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(book.volumeInfo.infoLink))
-                context.startActivity(intent)
-            },
+            modifier = Modifier
+                .weight(.9f)
+                .clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(book.volumeInfo.infoLink))
+                    context.startActivity(intent)
+                },
             text = book.volumeInfo.title,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
@@ -137,13 +144,16 @@ private fun ShowBookDetails(
         )
 
         Icon(
-            imageVector = Icons.Rounded.Add,
+            imageVector = Icons.Default.FavoriteBorder,
             contentDescription = "",
-            modifier = Modifier.clickable {
-                viewModel.saveBookToFirebase(book) {
-                    navController.popBackStack()
-                }
-            })
+            modifier = Modifier
+                .weight(.1f)
+                .size(40.dp)
+                .clickable {
+                    viewModel.saveBookToFirebase(book) {
+                        navController.popBackStack()
+                    }
+                })
     }
 
     Text(

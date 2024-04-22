@@ -3,7 +3,10 @@ package com.example.jetareader.di
 import com.example.jetareader.network.BooksApi
 import com.example.jetareader.repository.BookRepository
 import com.example.jetareader.repository.BookRepositoryImp
+import com.example.jetareader.repository.FirebaseRepository
+import com.example.jetareader.repository.FirebaseRepositoryImp
 import com.example.jetareader.utils.Constants
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,5 +30,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideBookRepository(booksApi: BooksApi): BookRepository = BookRepositoryImp(booksApi)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRepository(): FirebaseRepository =
+        FirebaseRepositoryImp(
+            FirebaseFirestore.getInstance().collection(Constants.FirebaseCollections.BOOKS)
+        )
 
 }

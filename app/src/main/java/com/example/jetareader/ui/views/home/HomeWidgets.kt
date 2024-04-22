@@ -39,14 +39,14 @@ import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.theme.Pink40
 
 @Composable
-fun BookCardItem(MBook: MBook, navController: NavController, onClick: (String) -> Unit = {}) {
+fun BookCardItem(mBook: MBook, navController: NavController, onClick: (String?) -> Unit = {}) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(end = 16.dp)
             .height(240.dp)
             .width(200.dp)
-            .clickable { onClick(MBook.id) },
+            .clickable { onClick(mBook.id) },
         shape = RoundedCornerShape(30.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -84,7 +84,7 @@ fun BookCardItem(MBook: MBook, navController: NavController, onClick: (String) -
                 }
             }
             Text(
-                text = MBook.title,
+                text = mBook.title,
                 modifier = Modifier.padding(top = 4.dp, end = 4.dp, start = 4.dp),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
@@ -92,7 +92,7 @@ fun BookCardItem(MBook: MBook, navController: NavController, onClick: (String) -
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = MBook.authors,
+                text = mBook.authors,
                 modifier = Modifier.padding(end = 4.dp, start = 4.dp, bottom = 6.dp),
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,

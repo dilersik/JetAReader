@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.jetareader.model.Book
 import com.example.jetareader.model.MBook
 import com.example.jetareader.repository.BookRepository
+import com.example.jetareader.utils.Constants
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -34,11 +35,11 @@ class BookDetailsViewModel @Inject constructor(private val bookRepository: BookR
             description = book.volumeInfo.description,
             pageCount = book.volumeInfo.pageCount
         )
-        val dbCollection = firestore.collection("books")
+        val dbCollection = firestore.collection(Constants.FirebaseCollections.BOOKS)
         dbCollection.add(mBook)
             .addOnSuccessListener { reference ->
                 dbCollection.document(reference.id)
-                    .update(hashMapOf(mBook.id.toString() to reference.id) as Map<String, Any>)
+                    .update(hashMapOf("id" to reference.id) as Map<String, Any>)
                     .addOnSuccessListener {
                         redirect()
                     }
