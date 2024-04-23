@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -88,48 +89,53 @@ private fun HomeContent(
     navController: NavController,
     viewModel: HomeViewModel
 ) {
-    Column(modifier) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TitleSection(labelResId = R.string.home_title_section, modifier = Modifier.weight(.8f))
-            Column(
-                modifier = Modifier
-                    .weight(.2f)
-                    .padding(top = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.AccountCircle, contentDescription = "",
+    LazyColumn(modifier) {
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TitleSection(
+                    labelResId = R.string.home_title_section,
+                    modifier = Modifier.weight(.8f)
+                )
+                Column(
                     modifier = Modifier
-                        .clickable {
-                            navController.navigate(ViewsEnum.BOOK_STATS.name)
-                        }
-                        .size(50.dp),
-                    tint = MaterialTheme.colorScheme.secondary
-                )
-                Text(
-                    text = viewModel.getUser()?.displayName.toString(),
-                    modifier = Modifier.padding(2.dp),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Purple40,
-                    maxLines = 1,
-                    overflow = TextOverflow.Clip
-                )
-                HorizontalDivider()
+                        .weight(.2f)
+                        .padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.AccountCircle, contentDescription = "",
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate(ViewsEnum.BOOK_STATS.name)
+                            }
+                            .size(50.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        text = viewModel.getUser()?.displayName.toString(),
+                        modifier = Modifier.padding(2.dp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Purple40,
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip
+                    )
+                    HorizontalDivider()
+                }
             }
-        }
 
-        Row(modifier = Modifier.padding(top = 16.dp)) {
-            BookCardItem(mBook = MBook("1", "Book", "TESTE", "", "", ""), navController)
-        }
+            Row(modifier = Modifier.padding(top = 16.dp)) {
+                BookCardItem(mBook = MBook("1", "Book", "TESTE", "", "", ""))
+            }
 
-        TitleSection(
-            labelResId = R.string.home_subtitle_section,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-        when {
-            viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            viewModel.error != null -> LocalContext.current.showToast(viewModel.error!!)
-            else -> ReadingBooksList(MBooks = viewModel.books, navController = navController)
+            TitleSection(
+                labelResId = R.string.home_subtitle_section,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            when {
+                viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                viewModel.error != null -> LocalContext.current.showToast(viewModel.error!!)
+                else -> ReadingBooksList(MBooks = viewModel.books, navController = navController)
+            }
         }
     }
 }
@@ -154,8 +160,10 @@ private fun ReadingBooksList(MBooks: List<MBook>, navController: NavController) 
             .horizontalScroll(scrollState)
     ) {
 
-        MBooks.forEach {
-            BookCardItem(mBook = it, navController = navController)
+        MBooks.forEach { mBook ->
+            BookCardItem(mBook = mBook) {
+                navController.navigate(ViewsEnum.BOOK_UPDATE.name + "/${mBook.id}")
+            }
         }
     }
 }

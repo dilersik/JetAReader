@@ -43,6 +43,8 @@ class HomeViewModel @Inject constructor(private val firebaseRepository: Firebase
         }
     }
 
+    fun getBookById(bookId: String) = _books.value.firstOrNull { it.id == bookId }
+
     fun logout() = auth.signOut()
 
     fun getUser() = auth.currentUser

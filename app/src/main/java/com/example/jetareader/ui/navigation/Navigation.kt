@@ -11,6 +11,7 @@ import com.example.jetareader.ui.views.book_details.BookDetailsViewConstants
 import com.example.jetareader.ui.views.book_search.BookSearchView
 import com.example.jetareader.ui.views.book_stats.BookStatsView
 import com.example.jetareader.ui.views.book_update.BookUpdateView
+import com.example.jetareader.ui.views.book_update.BookUpdateViewConstants
 import com.example.jetareader.ui.views.create_account.CreateAccountView
 import com.example.jetareader.ui.views.home.HomeView
 import com.example.jetareader.ui.views.login.LoginView
@@ -53,8 +54,13 @@ fun Navigation() {
             BookDetailsView(navController = navController, navBackStackEntry = it)
         }
 
-        composable(ViewsEnum.BOOK_UPDATE.name) {
-            BookUpdateView(navController = navController)
+        composable(
+            ViewsEnum.BOOK_UPDATE.name + "/{${BookUpdateViewConstants.PARAM}}",
+            arguments = listOf(navArgument(BookUpdateViewConstants.PARAM) {
+                type = NavType.StringType
+            })
+        ) {
+            BookUpdateView(navController = navController, navBackStackEntry = it)
         }
 
         composable(ViewsEnum.BOOK_STATS.name) {

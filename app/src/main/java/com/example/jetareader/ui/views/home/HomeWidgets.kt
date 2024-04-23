@@ -5,8 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -29,8 +28,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -39,12 +39,12 @@ import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.theme.Pink40
 
 @Composable
-fun BookCardItem(mBook: MBook, navController: NavController, onClick: (String?) -> Unit = {}) {
+fun BookCardItem(mBook: MBook, onClick: (String?) -> Unit = {}) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(end = 16.dp)
-            .height(240.dp)
+            .height(300.dp)
             .width(200.dp)
             .clickable { onClick(mBook.id) },
         shape = RoundedCornerShape(30.dp),
@@ -55,7 +55,7 @@ fun BookCardItem(mBook: MBook, navController: NavController, onClick: (String?) 
             Row(horizontalArrangement = Arrangement.Center) {
                 val painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(context)
-                        .data("https://books.google.com/books/content?id=6DQACwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api")
+                        .data(mBook.photoUrl)
                         .crossfade(true)
                         .scale(Scale.FIT)
                         .build()
@@ -65,7 +65,7 @@ fun BookCardItem(mBook: MBook, navController: NavController, onClick: (String?) 
                     contentDescription = "",
                     modifier = Modifier
                         .weight(.7f)
-                        .height(140.dp)
+                        .height(180.dp)
                 )
                 Column(
                     modifier = Modifier
@@ -85,22 +85,23 @@ fun BookCardItem(mBook: MBook, navController: NavController, onClick: (String?) 
             }
             Text(
                 text = mBook.title,
-                modifier = Modifier.padding(top = 4.dp, end = 4.dp, start = 4.dp),
-                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(top = 6.dp, end = 4.dp, start = 4.dp),
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
+                lineHeight = TextUnit(16f, TextUnitType.Sp),
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = mBook.authors,
-                modifier = Modifier.padding(end = 4.dp, start = 4.dp, bottom = 6.dp),
+                modifier = Modifier.padding(end = 4.dp, start = 4.dp, top = 4.dp),
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
@@ -111,18 +112,17 @@ fun BookCardItem(mBook: MBook, navController: NavController, onClick: (String?) 
 }
 
 @Composable
-private fun RoundedButton(labelResId: Int, radius: Int = 30, onClick: (String) -> Unit = {}) {
+private fun RoundedButton(labelResId: Int, radius: Int = 30) {
     Surface(
-        modifier = Modifier.clip(
-            RoundedCornerShape(bottomEndPercent = radius, topStartPercent = radius)
-        ),
+        modifier = Modifier
+            .width(90.dp)
+            .clip(
+                RoundedCornerShape(bottomEndPercent = radius, topStartPercent = radius)
+            ),
         color = Pink40
     ) {
         Column(
-            modifier = Modifier
-                .width(90.dp)
-                .fillMaxHeight()
-                .clickable { onClick("a") },
+            modifier = Modifier.padding(top = 6.dp, bottom = 6.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

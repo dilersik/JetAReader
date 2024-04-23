@@ -29,7 +29,7 @@ class BookDetailsViewModel @Inject constructor(private val bookRepository: BookR
             authors = book.volumeInfo.authors.toString(),
             userId = auth.currentUser?.uid.toString(),
             googleBookId = book.id,
-            photoUrl = book.volumeInfo.imageLinks?.large,
+            photoUrl = book.volumeInfo.imageLinks?.medium,
             categories = book.volumeInfo.categories.toString(),
             publishedDate = book.volumeInfo.publishedDate,
             description = book.volumeInfo.description,
