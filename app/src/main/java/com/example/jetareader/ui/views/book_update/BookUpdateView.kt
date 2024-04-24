@@ -14,11 +14,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -65,6 +67,40 @@ fun BookUpdateView(
             mBook?.let {
                 CardBook(it)
                 FormBook(it)
+                ReadingLinksBook(mBook)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReadingLinksBook(mBook: MBook) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TextButton(onClick = { }, enabled = mBook.startedReading == null) {
+            if (mBook.startedReading != null) {
+                Text(
+                    text = stringResource(
+                        R.string.started_reading_txt,
+                        mBook.startedReading.toString(),
+                    ),
+                    modifier = Modifier.alpha(0.6f),
+                )
+            } else {
+                Text(text = stringResource(R.string.start_reading_now_link))
+            }
+        }
+
+        TextButton(onClick = { }, enabled = mBook.finishedReading == null) {
+            if (mBook.finishedReading != null) {
+                Text(
+                    text = stringResource(
+                        R.string.finished_reading_txt,
+                        mBook.finishedReading.toString(),
+                    ),
+                    modifier = Modifier.alpha(0.6f),
+                )
+            } else {
+                Text(text = stringResource(R.string.finish_reading_now_link))
             }
         }
     }
