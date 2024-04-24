@@ -25,4 +25,5 @@
     <string name="book_author_lbl">Author: %s</string>
     <string name="book_date_lbl">Date: %s</string>
     <string name="book_publisher_lbl">Publisher: %s</string>
+    <string name="enter_your_thoughts_lbl">Enter your thoughts</string>
 </resources>

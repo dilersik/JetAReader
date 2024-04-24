@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -110,14 +111,14 @@ private fun BookRow(context: Context, book: Book) {
                 .data(book.volumeInfo.imageLinks?.thumbnail)
                 .crossfade(true)
                 .scale(Scale.FILL)
-                .build()
+                .build(),
         )
         Image(
             painter = painter,
             contentDescription = "",
             modifier = Modifier
                 .width(100.dp)
-                .height(140.dp)
+                .height(140.dp),
         )
 
         Column(modifier = Modifier.padding(start = 16.dp)) {
@@ -127,18 +128,18 @@ private fun BookRow(context: Context, book: Book) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                maxLines = 2
+                maxLines = 2,
             )
             Text(
                 text = book.volumeInfo.subtitle ?: "",
                 overflow = TextOverflow.Clip,
                 style = MaterialTheme.typography.titleSmall,
-                maxLines = 2
+                maxLines = 2,
             )
             Text(
                 text = stringResource(
                     R.string.book_date_lbl,
-                    book.volumeInfo.publishedDate
+                    book.volumeInfo.publishedDate,
                 ),
                 modifier = Modifier.padding(top = 6.dp),
                 style = MaterialTheme.typography.labelLarge,
@@ -147,12 +148,12 @@ private fun BookRow(context: Context, book: Book) {
             Text(
                 text = stringResource(
                     R.string.book_author_lbl,
-                    book.volumeInfo.authors
+                    book.volumeInfo.authors,
                 ),
                 overflow = TextOverflow.Clip,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.secondary,
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
@@ -170,9 +171,11 @@ private fun SearchForm(onSearch: (String) -> Unit = {}) {
             .padding(16.dp),
         state = searchQueryState,
         labelResId = R.string.search_lbl,
+        imeAction = ImeAction.Search,
         keyboardActions = KeyboardActions {
             if (!valid) return@KeyboardActions
             onSearch(searchQueryState.value.trim())
             keyboardController?.hide()
-        })
+        },
+    )
 }
