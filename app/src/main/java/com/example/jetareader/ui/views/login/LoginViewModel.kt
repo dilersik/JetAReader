@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetareader.model.MUser
+import com.example.jetareader.utils.Constants.FirebaseCollections.USERS
 import com.example.jetareader.utils.isEmail
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -56,7 +57,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         ).mapToFirestore()
 
         FirebaseFirestore.getInstance()
-            .collection("users")
+            .collection(USERS)
             .add(user)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

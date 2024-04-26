@@ -6,5 +6,6 @@ object Constants {
 
     object FirebaseCollections {
         const val BOOKS = "books"
+        const val USERS = "users"
     }
 }

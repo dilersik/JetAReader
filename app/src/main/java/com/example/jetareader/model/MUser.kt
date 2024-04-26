@@ -17,4 +17,5 @@ data class MUser(
             "avatar_url" to avatarUrl
         )
     }
+
 }

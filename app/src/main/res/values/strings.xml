@@ -30,4 +30,6 @@
     <string name="finished_reading_txt">Finished reading on: %s</string>
     <string name="start_reading_now_link">Start reading now</string>
     <string name="finish_reading_now_link">Mark as read</string>
+    <string name="save_btn">Update</string>
+    <string name="delete_btn">Delete</string>
 </resources>

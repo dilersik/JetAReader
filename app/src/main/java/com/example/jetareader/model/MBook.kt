@@ -21,7 +21,7 @@ data class MBook(
     @get:PropertyName("published_date")
     @set:PropertyName("published_date")
     var publishedDate: String? = null,
-    var rating: Double? = null,
+    var rating: Int? = null,
     var description: String? = null,
     @get:PropertyName("page_count")
     @set:PropertyName("page_count")
@@ -49,4 +49,13 @@ data class MBook(
         null,
         null,
     )
+
+    fun mapToFirestore(): MutableMap<String, Any?> {
+        return mutableMapOf(
+            "finished_reading_at" to finishedReading,
+            "started_reading_at" to startedReading,
+            "rating" to rating,
+            "notes" to notes,
+        )
+    }
 }

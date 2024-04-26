@@ -43,7 +43,7 @@ fun BookCardItem(mBook: MBook, onClick: (String?) -> Unit = {}) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
-            .padding(end = 16.dp)
+            .padding(start = 16.dp, bottom = 16.dp)
             .height(300.dp)
             .width(200.dp)
             .clickable { onClick(mBook.id) },

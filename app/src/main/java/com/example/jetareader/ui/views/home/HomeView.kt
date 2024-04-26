@@ -1,5 +1,6 @@
 package com.example.jetareader.ui.views.home
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
@@ -9,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -68,14 +69,7 @@ fun HomeView(navController: NavHostController) {
         }) { padding ->
         HomeContent(
             modifier = Modifier
-                .padding(
-                    top = padding
-                        .calculateTopPadding()
-                        .plus(16.dp),
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
-                )
+                .padding(padding)
                 .fillMaxSize(),
             navController = navController,
             viewModel = viewModel
@@ -89,53 +83,57 @@ private fun HomeContent(
     navController: NavController,
     viewModel: HomeViewModel
 ) {
-    LazyColumn(modifier) {
-        item {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TitleSection(
-                    labelResId = R.string.home_title_section,
-                    modifier = Modifier.weight(.8f)
-                )
-                Column(
-                    modifier = Modifier
-                        .weight(.2f)
-                        .padding(top = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.AccountCircle, contentDescription = "",
-                        modifier = Modifier
-                            .clickable {
-                                navController.navigate(ViewsEnum.BOOK_STATS.name)
-                            }
-                            .size(50.dp),
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        text = viewModel.getUser()?.displayName.toString(),
-                        modifier = Modifier.padding(2.dp),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Purple40,
-                        maxLines = 1,
-                        overflow = TextOverflow.Clip
-                    )
-                    HorizontalDivider()
-                }
-            }
+    Column(modifier.verticalScroll(ScrollState(0))) {
+        ReadingActivityRow(navController, viewModel)
 
-            Row(modifier = Modifier.padding(top = 16.dp)) {
-                BookCardItem(mBook = MBook("1", "Book", "TESTE", "", "", ""))
-            }
+        Row(modifier = Modifier.padding(top = 16.dp)) {
+            BookCardItem(mBook = MBook("1", "Book", "TESTE", "", "", ""))
+        }
 
-            TitleSection(
-                labelResId = R.string.home_subtitle_section,
-                modifier = Modifier.padding(top = 16.dp)
+        TitleSection(
+            labelResId = R.string.home_subtitle_section,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        when {
+            viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            viewModel.error != null -> LocalContext.current.showToast(viewModel.error!!)
+            else -> ReadingBooksList(MBooks = viewModel.books, navController = navController)
+        }
+    }
+}
+
+@Composable
+private fun ReadingActivityRow(navController: NavController, viewModel: HomeViewModel) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TitleSection(
+            labelResId = R.string.home_title_section,
+            modifier = Modifier.weight(.8f),
+        )
+        Column(
+            modifier = Modifier
+                .weight(.2f)
+                .padding(top = 16.dp, end = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.AccountCircle,
+                contentDescription = "",
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(ViewsEnum.BOOK_STATS.name)
+                    }
+                    .size(50.dp),
+                tint = MaterialTheme.colorScheme.secondary,
             )
-            when {
-                viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                viewModel.error != null -> LocalContext.current.showToast(viewModel.error!!)
-                else -> ReadingBooksList(MBooks = viewModel.books, navController = navController)
-            }
+            Text(
+                text = viewModel.getUser()?.displayName.toString(),
+                modifier = Modifier.padding(2.dp),
+                style = MaterialTheme.typography.labelLarge,
+                color = Purple40,
+                maxLines = 1,
+                overflow = TextOverflow.Clip,
+            )
+            HorizontalDivider()
         }
     }
 }
@@ -145,7 +143,7 @@ private fun TitleSection(labelResId: Int, modifier: Modifier = Modifier) {
     Text(
         text = stringResource(labelResId),
         style = MaterialTheme.typography.titleLarge,
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 16.dp)
     )
 }
 
