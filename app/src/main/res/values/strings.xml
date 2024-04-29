@@ -26,10 +26,11 @@
     <string name="book_date_lbl">Date: %s</string>
     <string name="book_publisher_lbl">Publisher: %s</string>
     <string name="enter_your_thoughts_lbl">Enter your thoughts</string>
-    <string name="started_reading_txt">Started reading on: %s</string>
-    <string name="finished_reading_txt">Finished reading on: %s</string>
+    <string name="started_reading_txt">Started on: %s</string>
+    <string name="finished_reading_txt">Finished on: %s</string>
     <string name="start_reading_now_link">Start reading now</string>
     <string name="finish_reading_now_link">Mark as read</string>
     <string name="save_btn">Update</string>
     <string name="delete_btn">Delete</string>
+    <string name="book_updated_message">Book updated successfully!</string>
 </resources>

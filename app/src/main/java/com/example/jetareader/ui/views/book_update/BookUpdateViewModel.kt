@@ -41,7 +41,7 @@ class BookUpdateViewModel @Inject constructor(private val firebaseRepository: Fi
         }
     }
 
-    fun updateBook(mBook: MBook, isFinished: Boolean, isStarted: Boolean) {
+    fun updateBook(mBook: MBook, isFinished: Boolean, isStarted: Boolean, resultCall: () -> Unit) {
         mBook.finishedReading = if (isFinished) Timestamp.now() else mBook.finishedReading
         mBook.startedReading = if (isStarted) Timestamp.now() else mBook.startedReading
         mBook.id?.let {
@@ -51,7 +51,7 @@ class BookUpdateViewModel @Inject constructor(private val firebaseRepository: Fi
                 .update(mBook.mapToFirestore())
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        /// do something
+                        resultCall()
                     } else {
                         _error.value = task.exception?.message
                     }

@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -56,6 +56,7 @@ import com.example.jetareader.ui.views.book_update.BookUpdateViewConstants.PARAM
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.InputField
 import com.example.jetareader.ui.widgets.RatingBar
+import com.example.jetareader.utils.formatDate
 import com.example.jetareader.utils.showToast
 
 @Composable
@@ -96,7 +97,7 @@ fun BookUpdateView(
                     val notesState = rememberSaveable { mutableStateOf(mBook.notes ?: "") }
                     CardBook(mBook)
                     FormBook(mBook, hasChanged, notesState)
-                    ReadingLinksBook(mBook, isFinished, isStarted)
+                    ReadingLinksBook(mBook, hasChanged, isFinished, isStarted)
                     RatingBook(ratingState, mBook, hasChanged)
                     ButtonsBook(
                         mBook,
@@ -106,6 +107,7 @@ fun BookUpdateView(
                         isFinished,
                         hasChanged,
                         viewModel,
+                        navController
                     )
                 }
             }
@@ -135,32 +137,36 @@ private fun ButtonsBook(
     isStarted: MutableState<Boolean>,
     isFinished: MutableState<Boolean>,
     hasChanged: MutableState<Boolean>,
-    viewModel: BookUpdateViewModel
+    viewModel: BookUpdateViewModel,
+    navController: NavController
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(top = 40.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        ActionButton(Icons.Default.Edit, R.string.save_btn) {
-            if (hasChanged.value) {
-                mBook.rating = ratingState.value
-                mBook.notes = notesState.value
-                viewModel.updateBook(mBook, isFinished.value, isStarted.value)
+        ActionButton(Icons.Default.Edit, hasChanged.value, R.string.save_btn) {
+            mBook.rating = ratingState.value
+            mBook.notes = notesState.value
+            viewModel.updateBook(mBook, isFinished.value, isStarted.value) {
+                context.showToast(context.getString(R.string.book_updated_message))
+                navController.popBackStack()
             }
         }
-        ActionButton(Icons.Default.Delete, R.string.delete_btn) {
+        ActionButton(Icons.Default.Delete, hasChanged.value, R.string.delete_btn) {
             // delete
         }
     }
 }
 
 @Composable
-private fun ActionButton(icon: ImageVector, textResId: Int, onClick: () -> Unit) {
+private fun ActionButton(icon: ImageVector, enabled: Boolean, textResId: Int, onClick: () -> Unit) {
     IconButton(
         onClick = { onClick() },
         modifier = Modifier.width(120.dp),
+        enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
     ) {
         Row {
@@ -177,6 +183,7 @@ private fun ActionButton(icon: ImageVector, textResId: Int, onClick: () -> Unit)
 @Composable
 private fun ReadingLinksBook(
     mBook: MBook,
+    hasChanged: MutableState<Boolean>,
     isFinished: MutableState<Boolean>,
     isStarted: MutableState<Boolean>
 ) {
@@ -189,11 +196,12 @@ private fun ReadingLinksBook(
                 Text(
                     text = stringResource(
                         R.string.started_reading_txt,
-                        "----", //mBook.startedReading.toString(),
+                        mBook.startedReading?.formatDate().toString(),
                     ),
-                    modifier = Modifier.alpha(0.6f),
+                    color = Color.LightGray,
                 )
             } else {
+                hasChanged.value = true
                 Text(text = stringResource(R.string.start_reading_now_link))
             }
         }
@@ -205,11 +213,12 @@ private fun ReadingLinksBook(
                 Text(
                     text = stringResource(
                         R.string.finished_reading_txt,
-                        mBook.finishedReading.toString(),
+                        mBook.finishedReading?.formatDate().toString(),
                     ),
-                    modifier = Modifier.alpha(0.6f),
+                    color = Color.LightGray,
                 )
             } else {
+                hasChanged.value = true
                 Text(text = stringResource(R.string.finish_reading_now_link))
             }
         }
