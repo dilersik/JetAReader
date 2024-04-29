@@ -28,7 +28,6 @@ class BookUpdateViewModel @Inject constructor(private val firebaseRepository: Fi
     private val _book: MutableState<MBook> = mutableStateOf(MBook())
     val book by _book
 
-
     fun getBookById(id: String) {
         viewModelScope.launch {
             _loading.value = true
@@ -57,6 +56,20 @@ class BookUpdateViewModel @Inject constructor(private val firebaseRepository: Fi
                     }
                 }
         }
+    }
+
+    fun deleteBook(mBook: MBook, resultCall: () -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection(Constants.FirebaseCollections.BOOKS)
+            .document(mBook.id.toString())
+            .delete()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    resultCall()
+                } else {
+                    _error.value = task.exception?.message
+                }
+            }
     }
 
 }

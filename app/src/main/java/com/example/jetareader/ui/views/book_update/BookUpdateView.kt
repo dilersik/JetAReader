@@ -52,10 +52,12 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.example.jetareader.R
 import com.example.jetareader.model.MBook
+import com.example.jetareader.ui.navigation.ViewsEnum
 import com.example.jetareader.ui.views.book_update.BookUpdateViewConstants.PARAM
 import com.example.jetareader.ui.widgets.AppBarWidget
 import com.example.jetareader.ui.widgets.InputField
-import com.example.jetareader.ui.widgets.RatingBar
+import com.example.jetareader.ui.widgets.RatingBarWidget
+import com.example.jetareader.ui.widgets.ShowAlertDialogWidget
 import com.example.jetareader.utils.formatDate
 import com.example.jetareader.utils.showToast
 
@@ -121,7 +123,10 @@ private fun RatingBook(
     mBook: MBook,
     hasChanged: MutableState<Boolean>
 ) {
-    RatingBar(ratingState.intValue, modifier = Modifier.padding(top = 40.dp)) { chosenRating ->
+    RatingBarWidget(
+        ratingState.intValue,
+        modifier = Modifier.padding(top = 40.dp)
+    ) { chosenRating ->
         ratingState.intValue = chosenRating
         if (ratingState.intValue != mBook.rating) {
             hasChanged.value = true
@@ -141,6 +146,18 @@ private fun ButtonsBook(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(false) }
+    ShowAlertDialogWidget(
+        titleResId = R.string.delete_alert,
+        textResId = R.string.delete_message,
+        openDialog = openDialog,
+        onConfirm = {
+            viewModel.deleteBook(mBook) {
+                navController.navigate(ViewsEnum.HOME.name)
+            }
+        }
+    )
+
     Row(
         modifier = Modifier
             .padding(top = 40.dp)
@@ -152,11 +169,11 @@ private fun ButtonsBook(
             mBook.notes = notesState.value
             viewModel.updateBook(mBook, isFinished.value, isStarted.value) {
                 context.showToast(context.getString(R.string.book_updated_message))
-                navController.popBackStack()
+                navController.navigate(ViewsEnum.HOME.name)
             }
         }
-        ActionButton(Icons.Default.Delete, hasChanged.value, R.string.delete_btn) {
-            // delete
+        ActionButton(Icons.Default.Delete, true, R.string.delete_btn) {
+            openDialog.value = true
         }
     }
 }
@@ -167,7 +184,10 @@ private fun ActionButton(icon: ImageVector, enabled: Boolean, textResId: Int, on
         onClick = { onClick() },
         modifier = Modifier.width(120.dp),
         enabled = enabled,
-        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Gray
+        ),
     ) {
         Row {
             Icon(
@@ -189,7 +209,10 @@ private fun ReadingLinksBook(
 ) {
     Row {
         TextButton(
-            onClick = { isStarted.value = !isStarted.value },
+            onClick = {
+                isStarted.value = !isStarted.value
+                hasChanged.value = true
+            },
             enabled = !isStarted.value
         ) {
             if (isStarted.value) {
@@ -201,13 +224,13 @@ private fun ReadingLinksBook(
                     color = Color.LightGray,
                 )
             } else {
-                hasChanged.value = true
                 Text(text = stringResource(R.string.start_reading_now_link))
             }
         }
 
         TextButton(onClick = {
             isFinished.value = !isFinished.value
+            hasChanged.value = true
         }, enabled = !isFinished.value) {
             if (isFinished.value) {
                 Text(
@@ -218,7 +241,6 @@ private fun ReadingLinksBook(
                     color = Color.LightGray,
                 )
             } else {
-                hasChanged.value = true
                 Text(text = stringResource(R.string.finish_reading_now_link))
             }
         }
@@ -231,7 +253,8 @@ private fun FormBook(
     hasChanged: MutableState<Boolean>,
     notesState: MutableState<String>
 ) {
-    if (notesState.value != mBook.notes) {
+    val notes = mBook.notes ?: ""
+    if (notesState.value != notes) {
         hasChanged.value = true
     }
     InputField(

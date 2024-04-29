@@ -26,7 +26,7 @@ import com.example.jetareader.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RatingBar(
+fun RatingBarWidget(
     rating: Int,
     modifier: Modifier = Modifier,
     onPressRating: (Int) -> Unit
