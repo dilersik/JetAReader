@@ -56,7 +56,7 @@ fun BookSearchView(navController: NavHostController) {
         topBar = {
             AppBarWidget(
                 titleResId = R.string.book_search_title,
-                navController = navController,
+                onBackAction = { navController.navigate(ViewsEnum.HOME.name) }
             )
         }
     ) { padding ->

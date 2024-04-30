@@ -76,7 +76,7 @@ fun BookUpdateView(
         topBar = {
             AppBarWidget(
                 titleResId = R.string.book_update_title,
-                navController = navController,
+                onBackAction = { navController.popBackStack() },
             )
         },
     ) { padding ->

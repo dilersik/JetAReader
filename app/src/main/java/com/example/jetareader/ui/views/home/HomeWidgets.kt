@@ -105,7 +105,7 @@ fun BookCardItem(mBook: MBook, onClick: (String?) -> Unit = {}) {
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
-                RoundedButton(labelResId = R.string.reading_btn)
+                RoundedButton(labelResId = if (mBook.startedReading == null) R.string.read_btn else R.string.reading_btn)
             }
         }
     }

@@ -64,7 +64,7 @@ fun BookDetailsView(navController: NavHostController, navBackStackEntry: NavBack
         topBar = {
             AppBarWidget(
                 titleResId = R.string.book_details_title,
-                navController = navController,
+                onBackAction = { navController.popBackStack() },
             )
         }
     ) { padding ->

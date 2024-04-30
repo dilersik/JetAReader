@@ -15,9 +15,10 @@
     <string name="content_logout_description">logout</string>
     <string name="content_back_description">back</string>
     <string name="home_title_section">Your reading\nactivity right now</string>
-    <string name="home_subtitle_section">Reading list</string>
+    <string name="home_subtitle_section">Reading wishlist</string>
     <string name="content_favorite_description">favorite</string>
     <string name="reading_btn">Reading</string>
+    <string name="read_btn">Read</string>
     <string name="book_search_title">Search books</string>
     <string name="book_details_title">Book details</string>
     <string name="book_update_title">Update book</string>
@@ -37,4 +38,5 @@
     <string name="delete_message">This action can\'t be undone.</string>
     <string name="alert_btn_ok">OK</string>
     <string name="alert_btn_cancel">Cancel</string>
+    <string name="no_books_msg">No books found.</string>
 </resources>

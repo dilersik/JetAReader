@@ -48,7 +48,6 @@ fun HomeView(navController: NavHostController) {
         topBar = {
             AppBarWidget(
                 titleResId = R.string.splash_title,
-                navController = navController,
                 actions = {
                     IconButton(
                         onClick = {
@@ -58,7 +57,7 @@ fun HomeView(navController: NavHostController) {
                         }) {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = stringResource(R.string.content_logout_description)
+                            contentDescription = stringResource(R.string.content_logout_description),
                         )
                     }
                 },
@@ -86,10 +85,6 @@ private fun HomeContent(
     Column(modifier.verticalScroll(ScrollState(0))) {
         ReadingActivityRow(navController, viewModel)
 
-        Row(modifier = Modifier.padding(top = 16.dp)) {
-            BookCardItem(mBook = MBook("1", "Book", "TESTE", "", "", ""))
-        }
-
         TitleSection(
             labelResId = R.string.home_subtitle_section,
             modifier = Modifier.padding(top = 16.dp)
@@ -97,7 +92,10 @@ private fun HomeContent(
         when {
             viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             viewModel.error != null -> LocalContext.current.showToast(viewModel.error!!)
-            else -> ReadingBooksList(MBooks = viewModel.books, navController = navController)
+            else -> WishlistBooks(
+                books = viewModel.getWishlistBooks(),
+                navController = navController
+            )
         }
     }
 }
@@ -120,7 +118,7 @@ private fun ReadingActivityRow(navController: NavController, viewModel: HomeView
                 contentDescription = "",
                 modifier = Modifier
                     .clickable {
-                        navController.navigate(ViewsEnum.BOOK_STATS.name)
+
                     }
                     .size(50.dp),
                 tint = MaterialTheme.colorScheme.secondary,
@@ -136,6 +134,24 @@ private fun ReadingActivityRow(navController: NavController, viewModel: HomeView
             HorizontalDivider()
         }
     }
+
+    Row(modifier = Modifier.padding(top = 16.dp)) {
+        val books = viewModel.getReadingBooks()
+        when {
+            viewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            books.isEmpty() -> Text(
+                text = stringResource(R.string.no_books_msg),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            else -> {
+                books.forEach { book ->
+                    BookCardItem(book) {
+                        navController.navigate(ViewsEnum.BOOK_UPDATE.name + "/${book.id}")
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -148,7 +164,7 @@ private fun TitleSection(labelResId: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ReadingBooksList(MBooks: List<MBook>, navController: NavController) {
+private fun WishlistBooks(books: List<MBook>, navController: NavController) {
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -157,10 +173,16 @@ private fun ReadingBooksList(MBooks: List<MBook>, navController: NavController) 
             .padding(top = 16.dp)
             .horizontalScroll(scrollState)
     ) {
-
-        MBooks.forEach { mBook ->
-            BookCardItem(mBook = mBook) {
-                navController.navigate(ViewsEnum.BOOK_UPDATE.name + "/${mBook.id}")
+        if (books.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_books_msg),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        } else {
+            books.forEach { mBook ->
+                BookCardItem(mBook = mBook) {
+                    navController.navigate(ViewsEnum.BOOK_UPDATE.name + "/${mBook.id}")
+                }
             }
         }
     }

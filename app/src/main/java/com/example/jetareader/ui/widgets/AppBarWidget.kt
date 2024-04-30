@@ -25,13 +25,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.jetareader.R
 
 @Composable
 fun AppBarWidget(
     titleResId: Int,
-    navController: NavController,
+    onBackAction: () -> Unit = {},
     actions: @Composable () -> Unit = {},
     showBackArrow: Boolean = true
 ) {
@@ -59,7 +58,7 @@ fun AppBarWidget(
                             modifier = Modifier
                                 .padding(start = 12.dp)
                                 .scale(1.2f)
-                                .clickable { navController.popBackStack() }
+                                .clickable { onBackAction() }
                         )
                     }
                     Text(
