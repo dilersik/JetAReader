@@ -21,6 +21,7 @@
     <string name="read_btn">Read</string>
     <string name="book_search_title">Search books</string>
     <string name="book_details_title">Book details</string>
+    <string name="book_stats_title">Book stats</string>
     <string name="book_update_title">Update book</string>
     <string name="search_lbl">Search</string>
     <string name="book_author_lbl">Author: %s</string>
@@ -39,4 +40,7 @@
     <string name="alert_btn_ok">OK</string>
     <string name="alert_btn_cancel">Cancel</string>
     <string name="no_books_msg">No books found.</string>
+    <string name="your_stats_title">YOUR STATS</string>
+    <string name="you_re_reading_s_books">You\'re reading: %s books</string>
+    <string name="you_ve_read_s_books">You\'ve read: %s books</string>
 </resources>

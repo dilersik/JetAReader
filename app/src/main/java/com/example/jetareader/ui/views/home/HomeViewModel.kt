@@ -47,6 +47,8 @@ class HomeViewModel @Inject constructor(private val firebaseRepository: Firebase
 
     fun getReadingBooks() = books.filter { it.startedReading != null && it.finishedReading == null }
 
+    fun getReadBooks() = books.filter { it.startedReading != null && it.finishedReading != null }
+
     fun logout() = auth.signOut()
 
     fun getUser() = auth.currentUser

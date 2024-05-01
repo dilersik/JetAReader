@@ -61,9 +61,10 @@ fun HomeView(navController: NavHostController) {
                         )
                     }
                 },
-                showBackArrow = false
+                showBackArrow = false,
             )
-        }, floatingActionButton = {
+        },
+        floatingActionButton = {
             FabWidget { navController.navigate(ViewsEnum.BOOK_SEARCH.name) }
         }) { padding ->
         HomeContent(
@@ -71,7 +72,7 @@ fun HomeView(navController: NavHostController) {
                 .padding(padding)
                 .fillMaxSize(),
             navController = navController,
-            viewModel = viewModel
+            viewModel = viewModel,
         )
     }
 }
@@ -110,17 +111,16 @@ private fun ReadingActivityRow(navController: NavController, viewModel: HomeView
         Column(
             modifier = Modifier
                 .weight(.2f)
-                .padding(top = 16.dp, end = 16.dp),
+                .padding(top = 16.dp, end = 16.dp)
+                .clickable {
+                    navController.navigate(ViewsEnum.BOOK_STATS.name)
+                },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 imageVector = Icons.Rounded.AccountCircle,
                 contentDescription = "",
-                modifier = Modifier
-                    .clickable {
-
-                    }
-                    .size(50.dp),
+                modifier = Modifier.size(50.dp),
                 tint = MaterialTheme.colorScheme.secondary,
             )
             Text(
@@ -143,6 +143,7 @@ private fun ReadingActivityRow(navController: NavController, viewModel: HomeView
                 text = stringResource(R.string.no_books_msg),
                 style = MaterialTheme.typography.bodyLarge
             )
+
             else -> {
                 books.forEach { book ->
                     BookCardItem(book) {
