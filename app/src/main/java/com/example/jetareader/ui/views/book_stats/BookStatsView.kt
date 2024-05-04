@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Person
@@ -12,12 +14,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +29,8 @@ import androidx.navigation.NavHostController
 import com.example.jetareader.R
 import com.example.jetareader.ui.views.home.HomeViewModel
 import com.example.jetareader.ui.widgets.AppBarWidget
+import com.example.jetareader.ui.widgets.BookRow
+import com.example.jetareader.utils.showToast
 
 @Composable
 fun BookStatsView(navController: NavHostController) {
@@ -39,48 +45,65 @@ fun BookStatsView(navController: NavHostController) {
         },
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
-                shape = CircleShape,
-                elevation = CardDefaults.cardElevation(5.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(
-                        modifier = Modifier.padding(start = 25.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Icon(imageVector = Icons.Sharp.Person, contentDescription = "")
-                        Text(
-                            text = homeViewModel.getUser()?.displayName.toString(),
-                            style = MaterialTheme.typography.titleSmall,
-                        )
-                    }
-                    Column(modifier = Modifier.padding(start = 25.dp, top = 4.dp, bottom = 4.dp)) {
-                        Text(
-                            text = stringResource(R.string.your_stats_title),
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
-                        HorizontalDivider()
-                        Text(
-                            text = stringResource(
-                                R.string.you_re_reading_s_books,
-                                homeViewModel.getReadingBooks().size,
-                            ),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                        Text(
-                            text = stringResource(
-                                R.string.you_ve_read_s_books,
-                                homeViewModel.getReadingBooks().size,
-                            ),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                }
+            when {
+                homeViewModel.loading -> LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                homeViewModel.error != null -> LocalContext.current.showToast(homeViewModel.error!!)
+                else -> Content(homeViewModel, navController)
             }
+        }
+    }
+}
+
+@Composable
+private fun Content(homeViewModel: HomeViewModel, navController: NavHostController) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        shape = CircleShape,
+        elevation = CardDefaults.cardElevation(5.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier.padding(start = 25.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(imageVector = Icons.Sharp.Person, contentDescription = "")
+                Text(
+                    text = homeViewModel.getUser()?.displayName.toString(),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
+            Column(modifier = Modifier.padding(start = 25.dp, top = 4.dp, bottom = 4.dp)) {
+                Text(
+                    text = stringResource(R.string.your_stats_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                HorizontalDivider()
+                Text(
+                    text = stringResource(
+                        R.string.you_re_reading_s_books,
+                        homeViewModel.getReadingBooks().size,
+                    ),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.you_ve_read_s_books,
+                        homeViewModel.getReadingBooks().size,
+                    ),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        }
+    }
+
+    HorizontalDivider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
+
+    LazyColumn {
+        items(homeViewModel.getReadBooks()) {
+            BookRow(context = LocalContext.current, navController = navController, mBook = it)
         }
     }
 }
