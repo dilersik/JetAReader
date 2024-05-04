@@ -31,6 +31,7 @@ import com.example.jetareader.R
 import com.example.jetareader.model.Book
 import com.example.jetareader.model.MBook
 import com.example.jetareader.ui.navigation.ViewsEnum
+import com.example.jetareader.utils.formatDate
 
 @Composable
 fun BookRow(
@@ -78,16 +79,22 @@ fun BookRow(
                         maxLines = 2,
                     )
                     Text(
-                        text = book?.volumeInfo?.subtitle ?: mBook?.description.toString(),
+                        text = book?.volumeInfo?.subtitle ?: stringResource(
+                            id = R.string.started_reading_txt,
+                            mBook?.startedReading?.formatDate().toString()
+                        ),
                         overflow = TextOverflow.Clip,
                         style = MaterialTheme.typography.titleSmall,
                         maxLines = 2,
                     )
+                    val date = if (book?.volumeInfo?.publishedDate != null)
+                        stringResource(R.string.book_date_lbl, book.volumeInfo.publishedDate)
+                    else stringResource(
+                        R.string.finished_reading_txt,
+                        mBook?.finishedReading?.formatDate().toString()
+                    )
                     Text(
-                        text = stringResource(
-                            R.string.book_date_lbl,
-                            book?.volumeInfo?.publishedDate ?: mBook?.publishedDate.toString(),
-                        ),
+                        text = date,
                         modifier = Modifier.padding(top = 6.dp),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.secondary,
